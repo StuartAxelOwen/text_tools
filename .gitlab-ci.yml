@@ -1,4 +1,3 @@
 test:
   script:
-  - pip install -r requirements.txt --user
-  - PYTHONPATH=$(pwd) py.test
+  - bash test.sh

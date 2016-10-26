@@ -15,7 +15,7 @@ def tokenize(text, lowercase=True):
     return get_tokenizer().tokenize(text)
 
 
-def train_phrase_model(texts, num_models=1, delimiter=b'$DELIM$'):
+def train_phrase_model(texts, num_models=1, delimiter='$DELIM$'):
     """ texts can be iter if num_models is 1, but must be list otherwise! """
     from gensim.models import Phrases
 
@@ -31,7 +31,7 @@ def train_phrase_model(texts, num_models=1, delimiter=b'$DELIM$'):
         model = Phrases(
             _make_models_iter(make_token_stream(), models),
             threshold=(idx+1)*threshold_scale,
-            delimiter=delimiter
+            delimiter=delimiter.encode()
         )
         models.append(model)
 

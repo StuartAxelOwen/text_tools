@@ -1,0 +1,6 @@
+**/__pycache__
+Dockerfile
+.gitignore
+.git
+README.md
+.gitlab-ci.yml

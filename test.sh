@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-docker build -t py_text_tools .
+bash build.sh
 docker run -t py_text_tools py.test

@@ -1,5 +1,5 @@
 
-from text_tools import train_phrase_model
+from text_tools import train_phrase_model, apply_phrase_models
 from gensim.models import Phrases
 
 
@@ -28,4 +28,8 @@ def test_multi_phrase_model():
     for model in models:
         assert isinstance(model, Phrases)
         assert model.vocab[b'this'] > 0
+
+    phrased = list(apply_phrase_models(models, texts))
+    # Make sure applying phrase models works, that it returns a stream of token lists
+    assert isinstance(phrased[0], list)
 

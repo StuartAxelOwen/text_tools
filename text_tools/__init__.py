@@ -3,6 +3,7 @@ from nltk.tokenize import RegexpTokenizer
 import toolz
 import re
 
+
 @toolz.memoize()
 def get_tokenizer(pattern='\w+'):
     return RegexpTokenizer(pattern)
@@ -26,15 +27,9 @@ def train_phrase_model(texts, num_models=1, delimiter=b'$DELIM$'):
     threshold_scale = 5
     models = []
 
-    def make_models_iter(stream, models):
-        if len(models) == 0:
-            return stream
-        else:
-            return make_models_iter(models[0][stream], models[1:])
-
     for idx in range(num_models):
         model = Phrases(
-            make_models_iter(make_token_stream(), models),
+            _make_models_iter(make_token_stream(), models),
             threshold=(idx+1)*threshold_scale,
             delimiter=delimiter
         )
@@ -45,3 +40,24 @@ def train_phrase_model(texts, num_models=1, delimiter=b'$DELIM$'):
     else:
         return models
 
+
+def _make_models_iter(stream, models):
+    if len(models) == 0:
+        return stream
+    else:
+        return _make_models_iter(models[0][stream], models[1:])
+
+
+def apply_phrase_models(models, text):
+    text_iter = iter(text)
+    head = next(text_iter)
+    if isinstance(head, str):
+        # Iter of texts, need to tokenize
+        token_iter = toolz.concat([[tokenize(head)], map(tokenize, text_iter)])
+    elif isinstance(head, list):
+        token_iter = text_iter
+    else:
+        raise ValueError("Received unexpected type {}, expected text to contain strings or "
+                         "lists of strings (tokens)".format(type(head)))
+
+    return _make_models_iter(token_iter, models)
